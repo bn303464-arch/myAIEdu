@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>7주차 실습 · 나의 프로필 카드</title>
+<style>
+  /* 수강 신청 화면(static/style.css)과 같은 색과 큰 글씨를 써서 4050 수강생이 읽기 편하게 한다. */
+  :root {
+    --bg: #fffdf8; --fg: #1f2933; --muted: #5b6770; --brand: #1b5e9b;
+    --brand-fg: #fff; --card: #fff; --line: #d9dee3;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #14181c; --fg: #f1f3f5; --muted: #aab4bd; --brand: #5aa9e6;
+      --brand-fg: #0b1620; --card: #1c2228; --line: #33404a; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg);
+    font: 19px/1.7 "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif; }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 32px 16px 48px; }
+  h1 { font-size: 1.8rem; margin: 0 0 4px; }
+  .muted { color: var(--muted); }
+  /* 넓은 화면에서는 입력과 카드를 나란히, 휴대폰에서는 위아래로 쌓는다. */
+  .grid { display: grid; gap: 32px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); margin-top: 24px; }
+  form { display: grid; gap: 14px; }
+  label { display: grid; gap: 6px; font-weight: 700; }
+  input, textarea { font: inherit; padding: 12px; border: 1px solid var(--line); border-radius: 10px;
+    background: var(--card); color: var(--fg); width: 100%; }
+  textarea { min-height: 6em; resize: vertical; }
+  input:focus-visible, textarea:focus-visible, button:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; }
+  .count { font-weight: 400; font-size: .85rem; color: var(--muted); }
+  .count.over { color: #b42318; font-weight: 700; }
+  button { background: transparent; color: var(--brand); border: 2px solid var(--brand); border-radius: 10px;
+    padding: 10px 18px; font: inherit; font-weight: 700; cursor: pointer; justify-self: start; }
+  .card { background: var(--card); border: 1px solid var(--line); border-top: 8px solid var(--brand);
+    border-radius: 16px; padding: 28px; align-self: start; position: sticky; top: 16px; }
+  .card .role { color: var(--brand); font-weight: 700; margin: 0; }
+  .card .tagline { font-size: 1.35rem; font-weight: 700; line-height: 1.45; margin: 6px 0 16px; }
+  .card .keywords { display: flex; flex-wrap: wrap; gap: 8px; padding: 0; margin: 0 0 16px; list-style: none; }
+  .card .keywords li { background: var(--brand); color: var(--brand-fg); border-radius: 999px; padding: 2px 14px; font-size: .9rem; }
+  .card h3 { font-size: 1rem; color: var(--muted); margin: 16px 0 4px; }
+  .card p { margin: 0; white-space: pre-wrap; }
+  .placeholder { color: var(--muted); font-style: italic; }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <h1>나의 프로필 카드</h1>
+  <p class="muted">AI와 함께 다듬은 문구를 붙여 넣으면 카드가 바로 그려집니다. 입력 내용은 이 브라우저에만 저장되고 어디에도 전송되지 않습니다.</p>
+
+  <div class="grid">
+    <form id="form" autocomplete="off">
+      <!-- data-max: 실습 가이드에서 정한 권장 글자 수. 넘으면 경고만 하고 입력은 막지 않는다. -->
+      <label>불리고 싶은 이름(역할) <span class="count" data-for="role"></span>
+        <input name="role" data-max="20" placeholder="예: 현장형 리더십 코치">
+      </label>
+      <label>명함 한 줄 <span class="count" data-for="tagline"></span>
+        <input name="tagline" data-max="25" placeholder="예: 첫 반장의 첫 면담을 돕습니다">
+      </label>
+      <label>키워드 3개 (쉼표로 구분)
+        <input name="keywords" placeholder="예: 현장, 면담, 성장">
+      </label>
+      <label>브랜드 한 문장
+        <textarea name="sentence" placeholder="나는 ~를 위해 ~를 ~로 해결하는 ~이다."></textarea>
+      </label>
+      <label>30초 자기소개 <span class="count" data-for="intro"></span>
+        <textarea name="intro" data-max="150"></textarea>
+      </label>
+      <label>온라인 프로필 소개 <span class="count" data-for="bio"></span>
+        <textarea name="bio" data-max="300"></textarea>
+      </label>
+      <button type="button" id="reset">모두 지우기</button>
+    </form>
+
+    <article class="card" aria-live="polite">
+      <p class="role" id="c-role"></p>
+      <p class="tagline" id="c-tagline"></p>
+      <ul class="keywords" id="c-keywords"></ul>
+      <h3>브랜드 한 문장</h3>
+      <p id="c-sentence"></p>
+      <h3>30초 자기소개</h3>
+      <p id="c-intro"></p>
+      <h3>온라인 프로필</h3>
+      <p id="c-bio"></p>
+    </article>
+  </div>
+</main>
+
+<script>
+  // 프로젝트 프론트엔드 규칙: 사용자 입력은 textContent로만 화면에 넣는다(innerHTML 금지).
+  const STORAGE_KEY = "aiedu-week07-profile";
+  const form = document.getElementById("form");
+  const PLACEHOLDERS = {
+    role: "역할", tagline: "명함 한 줄을 입력하세요", sentence: "아직 비어 있어요",
+    intro: "아직 비어 있어요", bio: "아직 비어 있어요",
+  };
+
+  function setText(id, value, placeholder) {
+    const el = document.getElementById(id);
+    el.textContent = value || placeholder;
+    el.classList.toggle("placeholder", !value);
+  }
+
+  function render() {
+    const data = Object.fromEntries(new FormData(form));
+    for (const key of Object.keys(PLACEHOLDERS)) {
+      setText("c-" + key, (data[key] || "").trim(), PLACEHOLDERS[key]);
+    }
+    const list = document.getElementById("c-keywords");
+    list.replaceChildren();
+    // 강의에서 키워드는 3개로 정했으므로 그 이상은 카드에 넣지 않는다.
+    (data.keywords || "").split(",").map(s => s.trim()).filter(Boolean).slice(0, 3).forEach(word => {
+      const li = document.createElement("li");
+      li.textContent = word;
+      list.append(li);
+    });
+    form.querySelectorAll("[data-max]").forEach(field => {
+      const max = Number(field.dataset.max);
+      const out = form.querySelector(`[data-for="${field.name}"]`);
+      out.textContent = `${field.value.length} / ${max}자`;
+      out.classList.toggle("over", field.value.length > max);
+    });
+    save(data);
+  }
+
+  // 사파리 사생활 보호 모드 등에서는 localStorage가 예외를 던지므로 저장 실패를 무시한다.
+  function save(data) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch (e) {} }
+  function load() {
+    try {
+      const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+      for (const [k, v] of Object.entries(data)) if (form.elements[k]) form.elements[k].value = v;
+    } catch (e) {}
+  }
+
+  form.addEventListener("input", render);
+  document.getElementById("reset").addEventListener("click", () => { form.reset(); render(); });
+  load();
+  render();
+</script>
+</body>
+</html>

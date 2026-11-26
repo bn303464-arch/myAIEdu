@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>8주차 실습 · 나의 첫 소개 페이지</title>
+<style>
+  /* 7주차 프로필 카드와 같은 색 체계를 써서 두 결과물이 한 사람의 것으로 보이게 한다. */
+  :root {
+    --bg: #fffdf8; --fg: #1f2933; --muted: #5b6770; --brand: #1b5e9b;
+    --brand-fg: #fff; --card: #fff; --line: #d9dee3; --soft: #eef4fa;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #14181c; --fg: #f1f3f5; --muted: #aab4bd; --brand: #5aa9e6;
+      --brand-fg: #0b1620; --card: #1c2228; --line: #33404a; --soft: #1e2a35; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg);
+    font: 19px/1.7 "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 32px 16px 48px; }
+  h1 { font-size: 1.8rem; margin: 0 0 4px; }
+  .muted { color: var(--muted); }
+  .grid { display: grid; gap: 32px; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); margin-top: 24px; }
+  form { display: grid; gap: 14px; }
+  fieldset { border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px 16px; display: grid; gap: 12px; }
+  legend { font-weight: 700; color: var(--brand); padding: 0 6px; }
+  label { display: grid; gap: 6px; font-weight: 700; }
+  .hint { font-weight: 400; font-size: .85rem; color: var(--muted); }
+  input, textarea { font: inherit; padding: 12px; border: 1px solid var(--line); border-radius: 10px;
+    background: var(--card); color: var(--fg); width: 100%; }
+  textarea { min-height: 5em; resize: vertical; }
+  input:focus-visible, textarea:focus-visible, button:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; }
+  button { background: transparent; color: var(--brand); border: 2px solid var(--brand); border-radius: 10px;
+    padding: 10px 18px; font: inherit; font-weight: 700; cursor: pointer; justify-self: start; }
+
+  /* 미리보기: 실제 소개 페이지처럼 보이도록 입력 영역과 구분되는 카드로 감싼다. */
+  .preview { background: var(--card); border: 1px solid var(--line); border-radius: 16px; overflow: hidden;
+    align-self: start; position: sticky; top: 16px; }
+  .preview header { background: var(--brand); color: var(--brand-fg); padding: 32px 28px; }
+  .preview .name { margin: 0; font-weight: 700; opacity: .9; }
+  .preview .headline { font-size: 1.6rem; line-height: 1.4; margin: 8px 0; }
+  .preview .sub { margin: 0; }
+  .preview section { padding: 20px 28px; border-top: 1px solid var(--line); }
+  .preview h3 { margin: 0 0 8px; font-size: 1.05rem; color: var(--brand); }
+  .preview ul { margin: 0; padding-left: 1.2em; }
+  .preview p { margin: 0; white-space: pre-wrap; }
+  .preview .price { background: var(--soft); }
+  .preview .price strong { font-size: 1.4rem; }
+  .placeholder { color: var(--muted); font-style: italic; }
+  .preview header .placeholder { color: inherit; opacity: .7; }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <h1>나의 첫 소개 페이지</h1>
+  <p class="muted">AI와 다듬은 문구를 칸마다 붙여 넣으면 미리보기가 바로 바뀝니다. 입력 내용은 이 브라우저에만 저장되고 어디에도 전송되지 않습니다.</p>
+
+  <div class="grid">
+    <form id="form" autocomplete="off">
+      <fieldset>
+        <legend>첫 화면</legend>
+        <label>서비스 이름 <input name="name" placeholder="예: 첫 반장 면담 워크숍"></label>
+        <label>한 줄 제목 <span class="hint">고객의 문제로 시작하세요</span>
+          <input name="headline" placeholder="예: 첫 면담이 막막한 반장님께"></label>
+        <label>부제 <input name="sub" placeholder="예: 2시간 만에 내 손에 맞는 면담 순서를 만듭니다"></label>
+      </fieldset>
+      <fieldset>
+        <legend>내용</legend>
+        <label>이런 분께 추천합니다 <span class="hint">한 줄에 하나씩</span>
+          <textarea name="forWhom"></textarea></label>
+        <label>얻게 되는 것 <span class="hint">한 줄에 하나씩, 기능보다 결과로</span>
+          <textarea name="benefits"></textarea></label>
+        <label>진행 방식 <textarea name="howItWorks" placeholder="예: 소그룹 6명, 2시간, 실제 면담 역할극"></textarea></label>
+        <label>저를 소개합니다 <span class="hint">7주차 온라인 프로필을 붙여 넣으세요</span>
+          <textarea name="about"></textarea></label>
+      </fieldset>
+      <fieldset>
+        <legend>가격과 신청</legend>
+        <label>가격 <input name="price" placeholder="예: 1인 300,000원"></label>
+        <label>신청 안내 <span class="hint">실습 중에는 실제 연락처 대신 "강의 후 안내"처럼 적으세요</span>
+          <input name="cta" placeholder="예: 강의 후 안내"></label>
+      </fieldset>
+      <button type="button" id="reset">모두 지우기</button>
+    </form>
+
+    <article class="preview" aria-live="polite">
+      <header>
+        <p class="name" id="p-name"></p>
+        <h2 class="headline" id="p-headline"></h2>
+        <p class="sub" id="p-sub"></p>
+      </header>
+      <section><h3>이런 분께 추천합니다</h3><ul id="p-forWhom"></ul></section>
+      <section><h3>얻게 되는 것</h3><ul id="p-benefits"></ul></section>
+      <section><h3>진행 방식</h3><p id="p-howItWorks"></p></section>
+      <section><h3>저를 소개합니다</h3><p id="p-about"></p></section>
+      <section class="price"><h3>가격과 신청</h3><p><strong id="p-price"></strong></p><p id="p-cta"></p></section>
+    </article>
+  </div>
+</main>
+
+<script>
+  // 프로젝트 프론트엔드 규칙: 사용자 입력은 textContent로만 화면에 넣는다(innerHTML 금지).
+  const STORAGE_KEY = "aiedu-week08-landing";
+  const form = document.getElementById("form");
+  const TEXT_FIELDS = {
+    name: "서비스 이름", headline: "한 줄 제목을 입력하세요", sub: "부제",
+    howItWorks: "아직 비어 있어요", about: "아직 비어 있어요", price: "가격", cta: "신청 안내",
+  };
+  // 여러 줄 입력을 목록으로 보여 줄 칸. 강의록 4부에서 각각 세 가지를 권하므로 개수는 제한하지 않고 안내만 한다.
+  const LIST_FIELDS = ["forWhom", "benefits"];
+
+  function setText(el, value, placeholder) {
+    el.textContent = value || placeholder;
+    el.classList.toggle("placeholder", !value);
+  }
+
+  function setList(el, value) {
+    el.replaceChildren();
+    const items = value.split("\n").map(s => s.replace(/^[-•·*\s]+/, "").trim()).filter(Boolean);
+    if (!items.length) {
+      const li = document.createElement("li");
+      setText(li, "", "한 줄에 하나씩 적어 주세요");
+      el.append(li);
+      return;
+    }
+    for (const item of items) {
+      const li = document.createElement("li");
+      li.textContent = item;
+      el.append(li);
+    }
+  }
+
+  function render() {
+    const data = Object.fromEntries(new FormData(form));
+    for (const [key, placeholder] of Object.entries(TEXT_FIELDS)) {
+      setText(document.getElementById("p-" + key), (data[key] || "").trim(), placeholder);
+    }
+    for (const key of LIST_FIELDS) setList(document.getElementById("p-" + key), data[key] || "");
+    save(data);
+  }
+
+  // 사파리 사생활 보호 모드 등에서는 localStorage가 예외를 던지므로 저장 실패를 무시한다.
+  function save(data) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch (e) {} }
+  function load() {
+    try {
+      const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+      for (const [k, v] of Object.entries(data)) if (form.elements[k]) form.elements[k].value = v;
+    } catch (e) {}
+  }
+
+  form.addEventListener("input", render);
+  document.getElementById("reset").addEventListener("click", () => { form.reset(); render(); });
+  load();
+  render();
+</script>
+</body>
+</html>

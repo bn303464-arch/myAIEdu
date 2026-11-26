@@ -8,6 +8,12 @@
 - 이전 구조 파일에는 버그 수정만 한다. 새 기능은 마이그레이션을 먼저 적용한 뒤 `src/`에 작성한다.
 - `myFoodSelector/`는 별도 앱이며 이 규칙의 대상이 아니다.
 
+## 강의 자료 (`curriculum/`)
+
+- `curriculum/weekNN/`에 주차별 강의록(`lecture.md`), 실습 가이드(`practice-guide.md`), 예시 코드(`examples/`)를 둔다. 수강생이 단독으로 실행하는 교육 자료이며 서비스 코드가 아니므로 아래 계층 규칙의 예외다.
+- 예시 코드는 표준 라이브러리만 쓰고 앱 코드(`db`, `server`, `src` 및 각 계층)를 import하지 않는다. HTML 예시도 `textContent` 규칙을 따른다.
+- `tests/test_curriculum.py`가 위 규칙과 예시 코드 동작을 검사한다. 마이그레이션 때 이 테스트도 새 `tests/`로 옮긴다.
+
 ## 디렉터리
 
 ```
