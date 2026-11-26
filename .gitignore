@@ -1,0 +1,17 @@
+# 수강생 개인정보가 담긴 데이터베이스
+app.db*
+*.db
+*.db-*
+
+# 환경변수와 비밀 값
+.env
+.env.*
+!.env.example
+
+# Python 캐시
+__pycache__/
+*.pyc
+
+# 개인별 Claude Code 설정
+.claude/settings.local.json
+CLAUDE.local.md

@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>4050 AI 입문 8주 과정</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <p class="eyebrow">4050을 위한 AI 입문</p>
+      <h1>AI, 어렵지 않아요.<br>8주면 내 일에 써먹습니다.</h1>
+      <p class="lead">전문용어 없이, 내 일과 생활에 바로 쓰는 실습 중심 수업입니다.</p>
+      <a class="btn" href="#apply">수강 신청하기</a>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section id="curriculum" aria-labelledby="h-cur">
+      <h2 id="h-cur">8주 커리큘럼</h2>
+      <p id="course-info" class="muted">불러오는 중...</p>
+      <ol id="weeks" class="weeks"></ol>
+    </section>
+
+    <section id="apply" aria-labelledby="h-apply">
+      <h2 id="h-apply">수강 신청</h2>
+      <form id="form" novalidate>
+        <input type="hidden" id="course_id">
+        <label>이름
+          <input id="name" maxlength="50" autocomplete="name" required>
+        </label>
+        <label>휴대폰 번호
+          <input id="phone" type="tel" inputmode="numeric" placeholder="010-1234-5678" autocomplete="tel" required>
+        </label>
+        <label>연령대
+          <select id="age_group">
+            <option value="">선택 안 함</option>
+            <option value="40s">40대</option>
+            <option value="50s">50대</option>
+          </select>
+        </label>
+        <label>하시는 일 (선택)
+          <input id="occupation" maxlength="50" placeholder="예: 직장인, 자영업, 은퇴 준비">
+        </label>
+        <label>적정하다고 생각하는 수강료 (원, 선택)
+          <input id="willing_price" type="number" min="0" max="10000000" step="1000" inputmode="numeric">
+        </label>
+        <label class="check">
+          <input id="consent" type="checkbox">
+          <span>수강 안내를 위한 개인정보(이름, 연락처 등) 수집·이용에 동의합니다.</span>
+        </label>
+        <button class="btn" id="submit" type="submit">신청하기</button>
+        <p id="msg" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+  </main>
+
+  <footer class="wrap muted">© 4050 AI 입문 과정 · 파일럿 모집</footer>
+  <script src="/app.js"></script>
+</body>
+</html>
